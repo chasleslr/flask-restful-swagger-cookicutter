@@ -6,7 +6,6 @@ from flask import Flask
 from flask_apispec import FlaskApiSpec
 from flask_restful import Api
 from sqlalchemy_utils import create_database, database_exists
-from webargs.flaskparser import abort, parser
 
 from .api.resources.healthcheck import HealthcheckResource
 from .config import Config
@@ -72,12 +71,3 @@ def create_app(config_class=Config) -> Flask:
         db.create_all()
 
     return app
-
-
-@parser.error_handler
-def handle_request_parsing_error(err, req, schema, error_status_code, error_headers):
-    """webargs error handler that uses Flask-RESTful's abort function to return
-    a JSON error response to the client.
-    """
-    status_code = error_status_code or 422
-    abort(status_code, errors=err.messages)
